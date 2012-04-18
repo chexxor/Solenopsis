@@ -2,6 +2,9 @@ package com.redhat.solenopsis.ws.impl;
 
 import com.redhat.solenopsis.ws.LoginSvc;
 import com.redhat.solenopsis.ws.ServiceTypeEnum;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -15,7 +18,42 @@ import javax.xml.ws.handler.Handler;
  * @author sfloess
  *
  */
-public abstract class AbstractSessionIdBasedSvc<P> extends AbstractSvc<P> {    
+public abstract class AbstractSessionIdBasedSvc<P> extends AbstractSvc<P> {   
+    private class PortInvoker<P> implements InvocationHandler {
+        private final P wrapper;
+        
+        PortInvoker (final P wrapper) {
+            this.wrapper = wrapper;
+        }
+        
+        @Override
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            Object retVal = null;
+            
+            try {
+                retVal = method.invoke(wrapper, args);
+            }
+            
+            catch(Exception exception) {
+                boolean isInvalidSessionId = false;
+                
+                if (exception.getMessage().contains("INVALID_SESSION_ID")) {
+                    System.err.println("WE GOT INVALID SESSION ID!!!");
+                }
+                
+                if (isInvalidSessionId) {
+                    getLoginSvc().login();
+                    setSessionId((BindingProvider) port, getLoginSvc().getSessionId());                                                        
+                }
+                else {
+                    throw exception;
+                }
+            }
+            
+            return retVal;
+        }
+    }
+    
     /**
      * The service we use to login.
      */
@@ -41,6 +79,8 @@ public abstract class AbstractSessionIdBasedSvc<P> extends AbstractSvc<P> {
         return getLoginSvc().getServerUrl();
     }
     
+    
+    
     /**
      * Set the session id.
      */
@@ -65,7 +105,13 @@ public abstract class AbstractSessionIdBasedSvc<P> extends AbstractSvc<P> {
         if (!isLoggedIn() || null == port) {            
             login();
             
-            port = createPort();
+            //port = createPort();
+            P tempPort = createPort();   
+            
+            setUrl((BindingProvider) tempPort, getUrl() + "/" + getServiceType().getUrlSuffix() + "/" + getServiceName());
+            setSessionId((BindingProvider) tempPort, getLoginSvc().getSessionId()); 
+        
+            return (P) (Proxy.newProxyInstance(tempPort.getClass().getClassLoader(), tempPort.getClass().getInterfaces(), new PortInvoker(tempPort)));            
         }
         
         //
