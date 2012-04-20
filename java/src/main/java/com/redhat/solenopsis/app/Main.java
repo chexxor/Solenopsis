@@ -26,9 +26,24 @@ import java.util.List;
  */
 public class Main {
     public static void emitMetadata(final String msg, final LoginSvc loginSvc, final double apiVersion) throws Exception {
+        
         MetadataSvc metadataSvc = new DefaultMetadataSvc(loginSvc);
         
-        final DescribeMetadataResult describeMetadata = metadataSvc.getPort().describeMetadata(apiVersion);
+        System.out.println ("Describing the metadata");
+        
+        DescribeMetadataResult describeMetadata = metadataSvc.getPort().describeMetadata(apiVersion);
+        
+        final long time = 1000*60*3;
+        
+        System.out.println ("Sleeping for " + (time) + "ms");       
+        
+        synchronized(Main.class) {
+            Main.class.wait(time);
+        }
+        
+        System.out.println ("Describing the metadata AGAIN");
+        
+        describeMetadata = metadataSvc.getPort().describeMetadata(apiVersion);
         
         final List<DescribeMetadataObject> metadataObjects = describeMetadata.getMetadataObjects();                
         

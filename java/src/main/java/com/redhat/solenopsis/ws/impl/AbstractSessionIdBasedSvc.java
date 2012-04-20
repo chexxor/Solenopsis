@@ -37,6 +37,8 @@ public abstract class AbstractSessionIdBasedSvc<P> extends AbstractSvc<P> {
             catch(Exception exception) {
                 boolean isInvalidSessionId = false;
                 
+                exception.printStackTrace ();
+                
                 if (exception.getMessage().contains("INVALID_SESSION_ID")) {
                     System.err.println("WE GOT INVALID SESSION ID!!!");
                 }

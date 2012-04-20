@@ -5,6 +5,7 @@ import com.redhat.sforce.soap.enterprise.SforceService;
 import com.redhat.sforce.soap.enterprise.Soap;
 import com.redhat.solenopsis.credentials.Credentials;
 import com.redhat.solenopsis.ws.ServiceTypeEnum;
+import java.util.ArrayList;
 import java.util.logging.Level;
 
 /**
@@ -81,6 +82,11 @@ public final class DefaultEnterpriseSvc extends AbstractLoginSvc<Soap> {
         
         loginResult = null;
         loginResult = getPort().login(getCredentials().getUserName(), getCredentials().getSecurityPassword());
+        
+        final ArrayList<String> sessionIds = new ArrayList<String>();
+        sessionIds.add(getSessionId());
+        
+        getPort().invalidateSessions(sessionIds);
     }
 
     @Override
