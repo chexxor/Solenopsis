@@ -50,7 +50,7 @@ public class MetadataApi implements Metadata {
         //Save the metadata description to state. We can serialize to disk later.
         //this.metadataObjects = metaDescribe;
         
-        //Then use this list to get list of all members.
+        //Then use this list to get list of all components.
         List<Type> types = buildTypes(metadataSvc, metaDescribe, apiVersion);
         
         return types;
@@ -80,25 +80,25 @@ public class MetadataApi implements Metadata {
             }
         }
         
-        //We've got all the members. They need to be organized by type.
-        TreeMap<String, List<FileProperties>> typeToMemberProps = 
+        //We've got all the components. They need to be organized by type.
+        TreeMap<String, List<FileProperties>> typeToComponentProps = 
                 new TreeMap<String, List<FileProperties>>();
         for (FileProperties fileProp : fileProperties) {
             String fileName = fileProp.getFileName();
             String folderName = fileName.split("/")[0];
-            //List<FileProperties> fileProps = typeToMemberProps.get(fileProp.getType());
-            List<FileProperties> fileProps = typeToMemberProps.get(folderName);
+            //List<FileProperties> fileProps = typeToComponentProps.get(fileProp.getType());
+            List<FileProperties> fileProps = typeToComponentProps.get(folderName);
             if (fileProps == null)
                 fileProps = new ArrayList<FileProperties>();
             fileProps.add(fileProp);
-            //typeToMemberProps.put(fileProp.getType(), fileProps);
-            typeToMemberProps.put(folderName, fileProps);
+            //typeToComponentProps.put(fileProp.getType(), fileProps);
+            typeToComponentProps.put(folderName, fileProps);
         }
         
         //The received properties should be sorted by type,
         //  now construct OrgTypes for them.
-        for (String typeName : typeToMemberProps.keySet()) {
-            Type type = new OrgType(typeName, typeToMemberProps.get(typeName));
+        for (String typeName : typeToComponentProps.keySet()) {
+            Type type = new OrgType(typeName, typeToComponentProps.get(typeName));
             types.add(type);
         }
         
@@ -110,8 +110,8 @@ public class MetadataApi implements Metadata {
         
         List<ListMetadataQuery> typeQueries = new ArrayList<ListMetadataQuery>();
         
-        //Build query list to retrieve all the members.
-        final ListMetadataQuery memberQuery = new ListMetadataQuery();
+        //Build query list to retrieve all the components.
+        final ListMetadataQuery componentQuery = new ListMetadataQuery();
         for (DescribeMetadataObject dmo : metaDescribe) {
             ListMetadataQuery typeQuery = new ListMetadataQuery();
             typeQuery.setType(dmo.getXmlName());

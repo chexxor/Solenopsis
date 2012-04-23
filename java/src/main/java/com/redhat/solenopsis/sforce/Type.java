@@ -9,5 +9,5 @@ import java.util.List;
 public interface Type {
     
     public String getName();
-    public List<Member> getMembers();
+    public List<Component> getComponents();
 }

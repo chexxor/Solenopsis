@@ -2,7 +2,7 @@ package com.redhat.solenopsis.sforce.org;
 
 import com.redhat.solenopsis.sforce.Type;
 import com.redhat.sforce.soap.metadata.FileProperties;
-import com.redhat.solenopsis.sforce.Member;
+import com.redhat.solenopsis.sforce.Component;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,11 +13,11 @@ import java.util.List;
 public class OrgType implements Type {
 
     private String name;
-    private List<Member> members;
+    private List<Component> components;
     
     public OrgType(String typeName, List<FileProperties> fileProps) {
         this.name = typeName;
-        this.members = createMembers(fileProps);
+        this.components = createComponents(fileProps);
     }
     
     public OrgType(FileProperties fileProp) {
@@ -29,12 +29,12 @@ public class OrgType implements Type {
         //this.members =
     }
     
-    public List<Member> createMembers(List<FileProperties> fileProps) {
-        List<Member> members = new ArrayList<Member>();
+    public List<Component> createComponents(List<FileProperties> fileProps) {
+        List<Component> components = new ArrayList<Component>();
         for (FileProperties fileProp : fileProps) {
-            members.add(new OrgMember(fileProp));
+            components.add(new OrgComponent(fileProp));
         }
-        return members;
+        return components;
     }
     
     @Override
@@ -43,8 +43,8 @@ public class OrgType implements Type {
     }
 
     @Override
-    public List<Member> getMembers() {
-        return this.members;
+    public List<Component> getComponents() {
+        return this.components;
     }
     
 }

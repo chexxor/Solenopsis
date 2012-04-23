@@ -7,7 +7,7 @@ import com.redhat.sforce.soap.metadata.ListMetadataQuery;
 import com.redhat.solenopsis.credentials.Credentials;
 import com.redhat.solenopsis.credentials.impl.PropertiesCredentials;
 import com.redhat.solenopsis.properties.impl.FileMonitorPropertiesMgr;
-import com.redhat.solenopsis.sforce.Member;
+import com.redhat.solenopsis.sforce.Component;
 import com.redhat.solenopsis.sforce.Metadata;
 import com.redhat.solenopsis.sforce.Type;
 import com.redhat.solenopsis.sforce.localfs.MetadataDirectory;
@@ -96,8 +96,10 @@ public class Main {
         List<Type> fsTypes = fsMetadata.getTypes();
         for (Type fsType : fsTypes) {
             System.out.println("Found type: " + fsType.getName());
-            for (Member fsMember : fsType.getMembers()) {
-                System.out.println(" - " + fsMember.getName());
+            for (Component fsComponent : fsType.getComponents()) {
+                System.out.println(" - " + fsComponent.getFullName()
+                        + " (" + fsComponent.getType() + ")"
+                        + " [" + fsComponent.getFileName() + "]");
             }
         }
         
@@ -106,15 +108,17 @@ public class Main {
         List<Type> orgTypes = orgMetadata.getTypes();
         for (Type orgType : orgTypes) {
             System.out.println("Found type: " + orgType.getName());
-            for (Member orgMember : orgType.getMembers()) {
-                System.out.println(" - " + orgMember.getName());
+            for (Component orgComponent : orgType.getComponents()) {
+                System.out.println(" - " + orgComponent.getFullName() 
+                        + " (" + orgComponent.getType() + ")"
+                        + " [" + orgComponent.getFileName() + "]");
             }
         }
         
 //        SfCodeSource sfOrg = new SfCodeSource(
-//                workingDir,
+//                "/home/alex/dev/git/AlexSandboxTest/",
 //                new DefaultEnterpriseSvc(credentials));
-        //sfOrg.fetchAllMetadata();
+//        sfOrg.fetchAllMetadata();
         //sfOrg.buildTypesPropFile();
         
 //        String workingDirTwo = "/home/alex/dev/git/AlexSandboxTestTwo/";

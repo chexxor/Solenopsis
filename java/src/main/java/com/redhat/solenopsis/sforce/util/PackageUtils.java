@@ -38,8 +38,8 @@ public class PackageUtils {
             String objectName = metadataObject.getXmlName();
             newMemberset.setName(objectName);
             //TODO: Figure out way to get members that can't do star notation.
-            List<String> membersList = getMembersForType(objectName);
-            newMemberset.getMembers().addAll(membersList);
+            List<String> componentsList = getComponentsForType(objectName);
+            newMemberset.getMembers().addAll(componentsList);
             typeMembers.add(newMemberset);
         }
         
@@ -48,13 +48,13 @@ public class PackageUtils {
         return fullPackage;
     }
     
-    public static List<String> getMembersForType(String typeName) {
-        List<String> membersForType = new ArrayList<String>();
+    public static List<String> getComponentsForType(String typeName) {
+        List<String> componentsForType = new ArrayList<String>();
         
-        //TODO: Figure out how to get all members for a type
-        membersForType.add("*");
+        //TODO: Figure out how to get all components for a type
+        componentsForType.add("*");
         
-        return membersForType;
+        return componentsForType;
     }
     
     public static String writeBytesToDisk(byte[] bytes, String outputFile) throws IOException {

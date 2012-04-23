@@ -1,6 +1,6 @@
 package com.redhat.solenopsis.sforce.localfs;
 
-import com.redhat.solenopsis.sforce.Member;
+import com.redhat.solenopsis.sforce.Component;
 import com.redhat.solenopsis.sforce.Type;
 import java.io.File;
 import java.util.ArrayList;
@@ -26,12 +26,12 @@ public class FsType extends File implements Type {
     }
 
     @Override
-    public List<Member> getMembers() {
-        List<Member> memberList = new ArrayList<Member>();
-        for (File memberFile : Arrays.asList(super.listFiles())) {
-            memberList.add(new FsMember(memberFile));
+    public List<Component> getComponents() {
+        List<Component> componentList = new ArrayList<Component>();
+        for (File componentFile : Arrays.asList(super.listFiles())) {
+            componentList.add(new FsComponent(componentFile));
         }
-        return memberList;
+        return componentList;
     }
     
 }

@@ -13,7 +13,7 @@
     <xsl:template name="EmitProperty">
         <xsl:param name="pPROPERTY_NAME"/>
         <xsl:param name="pVALUE"/>
-<xsl:value-of select="$pPROPERTY_NAME"> = <xsl:value-of select="normalize-space($pVALUE)"/>  
+<xsl:value-of select="$pPROPERTY_NAME"/> = <xsl:value-of select="normalize-space($pVALUE)"/>  
     </xsl:template>
 
     <xsl:template match="/">
