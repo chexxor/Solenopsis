@@ -8,6 +8,7 @@ import com.redhat.solenopsis.credentials.Credentials;
 import com.redhat.solenopsis.credentials.impl.PropertiesCredentials;
 import com.redhat.solenopsis.properties.impl.FileMonitorPropertiesMgr;
 import com.redhat.solenopsis.sforce.Component;
+import com.redhat.solenopsis.sforce.ComponentMember;
 import com.redhat.solenopsis.sforce.Metadata;
 import com.redhat.solenopsis.sforce.Type;
 import com.redhat.solenopsis.sforce.localfs.MetadataDirectory;
@@ -100,20 +101,23 @@ public class Main {
                 System.out.println(" - " + fsComponent.getFullName()
                         + " (" + fsComponent.getType() + ")"
                         + " [" + fsComponent.getFileName() + "]");
+                for (ComponentMember member : fsComponent.getMembers()) {
+                    System.out.println("  -- " + member);
+                }
             }
         }
         
         System.out.println("============ Org metadata ============");
-        Metadata orgMetadata = new MetadataApi(workingDir, new DefaultEnterpriseSvc(credentials));
-        List<Type> orgTypes = orgMetadata.getTypes();
-        for (Type orgType : orgTypes) {
-            System.out.println("Found type: " + orgType.getName());
-            for (Component orgComponent : orgType.getComponents()) {
-                System.out.println(" - " + orgComponent.getFullName() 
-                        + " (" + orgComponent.getType() + ")"
-                        + " [" + orgComponent.getFileName() + "]");
-            }
-        }
+//        Metadata orgMetadata = new MetadataApi(workingDir, new DefaultEnterpriseSvc(credentials));
+//        List<Type> orgTypes = orgMetadata.getTypes();
+//        for (Type orgType : orgTypes) {
+//            System.out.println("Found type: " + orgType.getName());
+//            for (Component orgComponent : orgType.getComponents()) {
+//                System.out.println(" - " + orgComponent.getFullName() 
+//                        + " (" + orgComponent.getType() + ")"
+//                        + " [" + orgComponent.getFileName() + "]");
+//            }
+//        }
         
 //        SfCodeSource sfOrg = new SfCodeSource(
 //                "/home/alex/dev/git/AlexSandboxTest/",

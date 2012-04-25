@@ -2,6 +2,8 @@ package com.redhat.solenopsis.sforce.org;
 
 import com.redhat.sforce.soap.metadata.FileProperties;
 import com.redhat.solenopsis.sforce.Component;
+import com.redhat.solenopsis.sforce.ComponentMember;
+import java.util.List;
 
 /**
  *
@@ -35,6 +37,11 @@ public class OrgComponent implements Component {
     @Override
     public String getFileName() {
         return this.fileName;
+    }
+
+    @Override
+    public List<ComponentMember> getMembers() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
     
 }
