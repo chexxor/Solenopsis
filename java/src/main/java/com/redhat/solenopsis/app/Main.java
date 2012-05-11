@@ -7,10 +7,7 @@ import com.redhat.sforce.soap.metadata.ListMetadataQuery;
 import com.redhat.solenopsis.credentials.Credentials;
 import com.redhat.solenopsis.credentials.impl.PropertiesCredentials;
 import com.redhat.solenopsis.properties.impl.FileMonitorPropertiesMgr;
-import com.redhat.solenopsis.sforce.Component;
-import com.redhat.solenopsis.sforce.ComponentMember;
-import com.redhat.solenopsis.sforce.Metadata;
-import com.redhat.solenopsis.sforce.Type;
+import com.redhat.solenopsis.sforce.*;
 import com.redhat.solenopsis.sforce.localfs.MetadataDirectory;
 import com.redhat.solenopsis.sforce.org.MetadataApi;
 import com.redhat.solenopsis.ws.LoginSvc;
@@ -19,6 +16,7 @@ import com.redhat.solenopsis.ws.impl.DefaultEnterpriseSvc;
 import com.redhat.solenopsis.ws.impl.DefaultMetadataSvc;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -91,46 +89,73 @@ public class Main {
         //emitMetadata("Partner WSDL", new DefaultPartnerSvc(credentials), apiVersion);
         
         String workingDir = "/home/alex/dev/git/AlexSandboxTest/unpackaged/";
+        String workingDir2 = "/home/alex/dev/git/AlexSandboxTest2/unpackaged/";
 
         System.out.println("============ FS metadata ============");
         Metadata fsMetadata = new MetadataDirectory(workingDir);
-        List<Type> fsTypes = fsMetadata.getTypes();
-        for (Type fsType : fsTypes) {
-            System.out.println("Found type: " + fsType.getName());
-            for (Component fsComponent : fsType.getComponents()) {
-                System.out.println(" - " + fsComponent.getFullName()
-                        + " (" + fsComponent.getType() + ")"
-                        + " [" + fsComponent.getFileName() + "]");
-                for (ComponentMember member : fsComponent.getMembers()) {
-                    System.out.println("  -- " + member);
+        Metadata fsMetadata2 = new MetadataDirectory(workingDir2);
+//        List<Type> fsTypes = fsMetadata.getTypes();
+//        for (Type fsType : fsTypes) {
+//            System.out.println("Found type: " + fsType.getName());
+//            for (Component fsComponent : fsType.getComponents()) {
+//                System.out.println(" - " + fsComponent.getFullName()
+//                        + " (" + fsComponent.getType() + ")"
+//                        + " [" + fsComponent.getFileName() + "]");
+//                for (ComponentMember member : fsComponent.getMembers()) {
+//                    System.out.println("  -- " + member);
+//                }
+//            }
+//        }
+        
+//        System.out.println("============ FS Classes ============");
+//        List<Component> classList = fsMetadata.getComponentsOfType("classes");
+//        for (Component classComponent : classList) {
+//            System.out.println("Class name: " + classComponent.getFullName());
+//        }
+//        System.out.println("============ FS Objects ============");
+//        List<Component> objectList = fsMetadata.getComponentsOfType("objects");
+//        for (Component objectComponent : objectList) {
+//            System.out.println("Object name: " + objectComponent.getFullName());
+//        }
+        List<String> typesToCompare = new ArrayList<String>();
+        typesToCompare.add("classes");
+        Map<String, TypeDiff> typeNameToDiffMap
+                = fsMetadata.compareTo(fsMetadata2, typesToCompare);
+        
+        for (String typeName : typeNameToDiffMap.keySet()) {
+            System.out.println("Type: " + typeName);
+            TypeDiff typeDiff = typeNameToDiffMap.get(typeName);
+//            List<String> componentNameList = typeDiff.getComponentList();
+            Map<String, List<MemberDiff>> componentNameToDiffMap
+                    = typeDiff.getComponentNameToDiffMap();
+            for (String componentName : componentNameToDiffMap.keySet()) {
+                System.out.println("    Component: " + componentName);
+                List<MemberDiff> memberDiffList
+                        = componentNameToDiffMap.get(componentName);
+                for (MemberDiff diff : memberDiffList) {
+                    System.out.println("        Member different? " + diff.isDifferent()
+                            + ": " + diff.getDiffMessage());
                 }
             }
         }
         
-        System.out.println("============ Org metadata ============");
-//        Metadata orgMetadata = new MetadataApi(workingDir, new DefaultEnterpriseSvc(credentials));
-//        List<Type> orgTypes = orgMetadata.getTypes();
-//        for (Type orgType : orgTypes) {
-//            System.out.println("Found type: " + orgType.getName());
-//            for (Component orgComponent : orgType.getComponents()) {
-//                System.out.println(" - " + orgComponent.getFullName() 
-//                        + " (" + orgComponent.getType() + ")"
-//                        + " [" + orgComponent.getFileName() + "]");
-//            }
-//        }
+        //        System.out.println("============ Org metadata ============");
+        //        Metadata orgMetadata = new MetadataApi(workingDir, new DefaultEnterpriseSvc(credentials));
+        //        List<Type> orgTypes = orgMetadata.getTypes();
+        //        for (Type orgType : orgTypes) {
+        //            System.out.println("Found type: " + orgType.getName());
+        //            for (Component orgComponent : orgType.getComponents()) {
+        //                System.out.println(" - " + orgComponent.getFullName()
+        //                        + " (" + orgComponent.getType() + ")"
+        //                        + " [" + orgComponent.getFileName() + "]");
+        //            }
+        //        }
+        //        System.out.println("============ Org Classes ============");
+        //        List<Component> orgClassList = orgMetadata.getComponentsOfType("classes");
+        //        for (Component classComponent : orgClassList) {
+        //            System.out.println("Class name: " + classComponent.getFullName());
+        //        }
         
-//        SfCodeSource sfOrg = new SfCodeSource(
-//                "/home/alex/dev/git/AlexSandboxTest/",
-//                new DefaultEnterpriseSvc(credentials));
-//        sfOrg.fetchAllMetadata();
-        //sfOrg.buildTypesPropFile();
-        
-//        String workingDirTwo = "/home/alex/dev/git/AlexSandboxTestTwo/";
-//        SfCodeSource sfOrgTwo = new SfCodeSource(
-//                workingDirTwo,
-//                new DefaultEnterpriseSvc(credentials));
-//        sfOrg.compareLocalSourceTo(sfOrgTwo);
-        //sfOrg.pushAllMetadata();
         
     }
 }

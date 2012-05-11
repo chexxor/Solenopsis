@@ -19,7 +19,9 @@ public class OrgComponent implements Component {
     }
 
     OrgComponent(FileProperties fileProp) {
-        this.fullName = fileProp.getFileName();
+        //this.fullName = fileProp.getFileName();
+        this.fullName = fileProp.getFileName().substring(
+                fileProp.getFileName().lastIndexOf('/') + 1);
         this.type = fileProp.getType();
         this.fileName = fileProp.getFileName();
     }

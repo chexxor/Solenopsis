@@ -4,6 +4,7 @@ import com.redhat.sforce.soap.metadata.DescribeMetadataObject;
 import com.redhat.sforce.soap.metadata.DescribeMetadataResult;
 import com.redhat.sforce.soap.metadata.FileProperties;
 import com.redhat.sforce.soap.metadata.ListMetadataQuery;
+import com.redhat.solenopsis.sforce.Component;
 import com.redhat.solenopsis.sforce.Metadata;
 import com.redhat.solenopsis.sforce.Type;
 import com.redhat.solenopsis.ws.LoginSvc;
@@ -96,7 +97,7 @@ public class MetadataApi implements Metadata {
         }
         
         //The received properties should be sorted by type,
-        //  now construct OrgTypes for them.
+        //  now construct OrgType objects for them.
         for (String typeName : typeToComponentProps.keySet()) {
             Type type = new OrgType(typeName, typeToComponentProps.get(typeName));
             types.add(type);
@@ -128,6 +129,18 @@ public class MetadataApi implements Metadata {
     @Override
     public List<Type> getTypes() {
         return this.types;
+    }
+
+    @Override
+    public List<Component> getComponentsOfType(String desiredTypeName) {
+        List<Component> desiredComponentList = new ArrayList<Component>();
+        for (Type type : this.types) {
+            if (type.getName().equalsIgnoreCase(desiredTypeName)) {
+                desiredComponentList = type.getComponents();
+            }
+        }
+        
+        return desiredComponentList;
     }
     
 }

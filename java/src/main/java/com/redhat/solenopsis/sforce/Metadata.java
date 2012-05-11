@@ -1,7 +1,7 @@
 package com.redhat.solenopsis.sforce;
 
-import com.redhat.solenopsis.sforce.Type;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -10,5 +10,9 @@ import java.util.List;
 public interface Metadata {
     
     public List<Type> getTypes();
+
+    public List<Component> getComponentsOfType(String typeName);
+
+    public Map<String, TypeDiff> compareTo(Metadata fsMetadata2, List<String> typesToCompare);
     
 }
